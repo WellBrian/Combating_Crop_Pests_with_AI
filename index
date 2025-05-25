@@ -1,21 +1,38 @@
 {
  "cells": [
   {
+   "cell_type": "markdown",
+   "id": "df466f41",
+   "metadata": {
+    "papermill": {
+     "duration": 0.004747,
+     "end_time": "2025-05-25T20:51:11.333913",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:11.329166",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Load Data Directory"
+   ]
+  },
+  {
    "cell_type": "code",
    "execution_count": 1,
-   "id": "fb3eed52",
+   "id": "306e71fb",
    "metadata": {
     "execution": {
-     "iopub.execute_input": "2025-05-25T08:57:35.463273Z",
-     "iopub.status.busy": "2025-05-25T08:57:35.462976Z",
-     "iopub.status.idle": "2025-05-25T08:57:35.466523Z",
-     "shell.execute_reply": "2025-05-25T08:57:35.466013Z"
+     "iopub.execute_input": "2025-05-25T20:51:11.342772Z",
+     "iopub.status.busy": "2025-05-25T20:51:11.342553Z",
+     "iopub.status.idle": "2025-05-25T20:51:11.346029Z",
+     "shell.execute_reply": "2025-05-25T20:51:11.345542Z"
     },
     "papermill": {
-     "duration": 0.006939,
-     "end_time": "2025-05-25T08:57:35.467586",
+     "duration": 0.009037,
+     "end_time": "2025-05-25T20:51:11.347029",
      "exception": false,
-     "start_time": "2025-05-25T08:57:35.460647",
+     "start_time": "2025-05-25T20:51:11.337992",
      "status": "completed"
     },
     "tags": []
@@ -31,15 +48,920 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "5cb489ab",
+   "cell_type": "markdown",
+   "id": "c5b2cdb7",
    "metadata": {
     "papermill": {
-     "duration": 0.000803,
-     "end_time": "2025-05-25T08:57:35.469601",
+     "duration": 0.003776,
+     "end_time": "2025-05-25T20:51:11.354768",
      "exception": false,
-     "start_time": "2025-05-25T08:57:35.468798",
+     "start_time": "2025-05-25T20:51:11.350992",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Dependencies"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "07f056e6",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:11.363141Z",
+     "iopub.status.busy": "2025-05-25T20:51:11.362920Z",
+     "iopub.status.idle": "2025-05-25T20:51:15.506597Z",
+     "shell.execute_reply": "2025-05-25T20:51:15.505986Z"
+    },
+    "papermill": {
+     "duration": 4.149396,
+     "end_time": "2025-05-25T20:51:15.507943",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:11.358547",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Core PyTorch imports\n",
+    "import torch\n",
+    "import torch.nn as nn\n",
+    "import torch.optim as optim\n",
+    "import torch.nn.functional as F\n",
+    "from torch.utils.data import Dataset, DataLoader, random_split"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "4f7cf4d6",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003875,
+     "end_time": "2025-05-25T20:51:15.516155",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:15.512280",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Essential building blocks for neural networks, optimization, and data handling"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "97a428ba",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:15.525270Z",
+     "iopub.status.busy": "2025-05-25T20:51:15.524945Z",
+     "iopub.status.idle": "2025-05-25T20:51:20.388696Z",
+     "shell.execute_reply": "2025-05-25T20:51:20.388143Z"
+    },
+    "papermill": {
+     "duration": 4.86964,
+     "end_time": "2025-05-25T20:51:20.389995",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:15.520355",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Vision-specific imports\n",
+    "import torchvision\n",
+    "import torchvision.transforms as transforms\n",
+    "from torchvision import models\n",
+    "from torchvision.datasets import ImageFolder"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "51494392",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003894,
+     "end_time": "2025-05-25T20:51:20.398234",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:20.394340",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    " Pre-trained models, image transformations, and dataset utilities designed for computer vision tasks"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "id": "e0d5bd92",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:20.406879Z",
+     "iopub.status.busy": "2025-05-25T20:51:20.406583Z",
+     "iopub.status.idle": "2025-05-25T20:51:20.724897Z",
+     "shell.execute_reply": "2025-05-25T20:51:20.724364Z"
+    },
+    "papermill": {
+     "duration": 0.324137,
+     "end_time": "2025-05-25T20:51:20.726189",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:20.402052",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Image processing\n",
+    "from PIL import Image\n",
+    "import cv2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "693a6bf3",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003861,
+     "end_time": "2025-05-25T20:51:20.734187",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:20.730326",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "Tools for loading, manipulating, and preprocessing your maize leaf images"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "id": "685b2ae9",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:20.743063Z",
+     "iopub.status.busy": "2025-05-25T20:51:20.742864Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.550634Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.549799Z"
+    },
+    "papermill": {
+     "duration": 2.813485,
+     "end_time": "2025-05-25T20:51:23.551911",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:20.738426",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Data manipulation and analysis\n",
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "707b7b30",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003857,
+     "end_time": "2025-05-25T20:51:23.559912",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.556055",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "For exploring your dataset, visualizing results, and handling any metadata you might create"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "id": "d5b1d84b",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.568764Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.568185Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.759641Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.759110Z"
+    },
+    "papermill": {
+     "duration": 0.197142,
+     "end_time": "2025-05-25T20:51:23.760859",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.563717",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# System and file handling\n",
+    "import os\n",
+    "import glob\n",
+    "from pathlib import Path\n",
+    "import random\n",
+    "import shutil\n",
+    "\n",
+    "# Model evaluation and metrics\n",
+    "from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score\n",
+    "from sklearn.metrics import confusion_matrix, classification_report\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "# Progress tracking and utilities\n",
+    "from tqdm import tqdm\n",
+    "import time\n",
+    "import copy\n",
+    "import warnings\n",
+    "warnings.filterwarnings('ignore')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "98f71b1f",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003881,
+     "end_time": "2025-05-25T20:51:23.769012",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.765131",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Loading Data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "id": "c0aec2c1",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.778094Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.777797Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.828542Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.827791Z"
+    },
+    "papermill": {
+     "duration": 0.056909,
+     "end_time": "2025-05-25T20:51:23.829950",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.773041",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Set random seeds for reproducibility\n",
+    "torch.manual_seed(42)\n",
+    "np.random.seed(42)\n",
+    "random.seed(42)\n",
+    "if torch.cuda.is_available():\n",
+    "    torch.cuda.manual_seed(42)\n",
+    "    torch.cuda.manual_seed_all(42)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "id": "950a3131",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.838736Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.838517Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.841696Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.841158Z"
+    },
+    "papermill": {
+     "duration": 0.008723,
+     "end_time": "2025-05-25T20:51:23.842696",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.833973",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Set your dataset path\n",
+    "dataset_path = Path('/kaggle/input/crop-pestdatasets/Combined_pestDataset')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "ff97509f",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.851079Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.850879Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.891384Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.890680Z"
+    },
+    "papermill": {
+     "duration": 0.045884,
+     "end_time": "2025-05-25T20:51:23.892488",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.846604",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "train = pd.read_csv(dataset_path / 'Train.csv')\n",
+    "test = pd.read_csv(dataset_path / 'Test.csv')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "933e7708",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.901018Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.900807Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.918965Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.918403Z"
+    },
+    "papermill": {
+     "duration": 0.023606,
+     "end_time": "2025-05-25T20:51:23.919988",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.896382",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Image_id</th>\n",
+       "      <th>Label</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>id_02amazy34fgh2.jpg</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>id_02mh3w48pmyc9.jpg</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>id_02rpb463h9d3w.jpg</td>\n",
+       "      <td>0</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>id_02wc3jeeao8ol.jpg</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>id_03t2hapb8wz8p.jpg</td>\n",
+       "      <td>1</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "               Image_id  Label\n",
+       "0  id_02amazy34fgh2.jpg      1\n",
+       "1  id_02mh3w48pmyc9.jpg      0\n",
+       "2  id_02rpb463h9d3w.jpg      0\n",
+       "3  id_02wc3jeeao8ol.jpg      1\n",
+       "4  id_03t2hapb8wz8p.jpg      1"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "id": "93f77f7d",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.929314Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.928579Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.936757Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.936247Z"
+    },
+    "papermill": {
+     "duration": 0.013763,
+     "end_time": "2025-05-25T20:51:23.937806",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.924043",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Label\n",
+       "0    810\n",
+       "1    809\n",
+       "Name: count, dtype: int64"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "train['Label'].value_counts()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "152f79de",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003957,
+     "end_time": "2025-05-25T20:51:23.945909",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.941952",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Data Preprocessing\n",
+    "\n",
+    "#### Data Transformation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "id": "982ac9c1",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.954849Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.954646Z",
+     "iopub.status.idle": "2025-05-25T20:51:23.958911Z",
+     "shell.execute_reply": "2025-05-25T20:51:23.958436Z"
+    },
+    "papermill": {
+     "duration": 0.009924,
+     "end_time": "2025-05-25T20:51:23.959902",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.949978",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "# Transformations for training data\n",
+    "train_transforms = transforms.Compose([\n",
+    "    transforms.RandomResizedCrop(512),       # Random crop to 512x512\n",
+    "    transforms.RandomHorizontalFlip(),       # Random horizontal flip\n",
+    "    transforms.ToTensor(),                   # Convert PIL image to tensor\n",
+    "    transforms.Normalize(mean=[0.485, 0.456, 0.406],  # Normalize to ImageNet stats\n",
+    "                         std=[0.229, 0.224, 0.225])\n",
+    "])\n",
+    "\n",
+    "# Transformations for validation data\n",
+    "val_transforms = transforms.Compose([\n",
+    "    transforms.Resize(512),                  # Resize to 512x512\n",
+    "    transforms.ToTensor(),\n",
+    "    transforms.Normalize(mean=[0.485, 0.456, 0.406],\n",
+    "                         std=[0.229, 0.224, 0.225])\n",
+    "])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6d393b6b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.007294,
+     "end_time": "2025-05-25T20:51:23.971253",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.963959",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "## Data Preparation"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "id": "de8ed707",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:23.980545Z",
+     "iopub.status.busy": "2025-05-25T20:51:23.980347Z",
+     "iopub.status.idle": "2025-05-25T20:51:43.331992Z",
+     "shell.execute_reply": "2025-05-25T20:51:43.331075Z"
+    },
+    "papermill": {
+     "duration": 19.358245,
+     "end_time": "2025-05-25T20:51:43.333936",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:23.975691",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "source_dir = dataset_path / 'Images'\n",
+    "output_dir = '/kaggle/working/dataset_path'\n",
+    "train_dir = os.path.join(output_dir, 'train')\n",
+    "test_dir = os.path.join(output_dir, 'test')\n",
+    "\n",
+    "# Create train class folders\n",
+    "for label in train['Label'].unique():\n",
+    "    os.makedirs(os.path.join(train_dir, str(label)), exist_ok=True)\n",
+    "\n",
+    "# Create test folder (no class folders)\n",
+    "os.makedirs(test_dir, exist_ok=True)\n",
+    "\n",
+    "# Move train images\n",
+    "for _, row in train.iterrows():\n",
+    "    src = os.path.join(source_dir, row['Image_id'])\n",
+    "    dst = os.path.join(train_dir, str(row['Label']), row['Image_id'])\n",
+    "    if os.path.exists(src):\n",
+    "        shutil.copy2(src, dst)\n",
+    "\n",
+    "# Move test images\n",
+    "for _, row in test.iterrows():\n",
+    "    src = os.path.join(source_dir, row['Image_id'])\n",
+    "    dst = os.path.join(test_dir, row['Image_id'])\n",
+    "    if os.path.exists(src):\n",
+    "        shutil.copy2(src, dst)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "816accc8",
+   "metadata": {
+    "papermill": {
+     "duration": 0.004789,
+     "end_time": "2025-05-25T20:51:43.347933",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:43.343144",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### Log Missing Images"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "id": "0891fd2a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:43.362467Z",
+     "iopub.status.busy": "2025-05-25T20:51:43.362123Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.317573Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.316855Z"
+    },
+    "papermill": {
+     "duration": 0.963906,
+     "end_time": "2025-05-25T20:51:44.318927",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:43.355021",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "missing_files = []\n",
+    "for _, row in train.iterrows():\n",
+    "    src = os.path.join(source_dir, row['Image_id'])\n",
+    "    if not os.path.exists(src):\n",
+    "        missing_files.append(row['Image_id'])\n",
+    "\n",
+    "if missing_files:\n",
+    "    print(f\"Missing {len(missing_files)} training images\")\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "7ab428b6",
+   "metadata": {
+    "papermill": {
+     "duration": 0.00408,
+     "end_time": "2025-05-25T20:51:44.327516",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.323436",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### Load the training dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "id": "2d852e88",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.336392Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.336159Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.343422Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.342913Z"
+    },
+    "papermill": {
+     "duration": 0.012878,
+     "end_time": "2025-05-25T20:51:44.344451",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.331573",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "train_dataset = ImageFolder(root=train_dir, transform=train_transforms)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "a8934b37",
+   "metadata": {
+    "papermill": {
+     "duration": 0.004076,
+     "end_time": "2025-05-25T20:51:44.352500",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.348424",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### Handling test set"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "id": "1584766c",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.361215Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.360991Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.365475Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.364916Z"
+    },
+    "papermill": {
+     "duration": 0.009999,
+     "end_time": "2025-05-25T20:51:44.366475",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.356476",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "class TestDataset(Dataset):\n",
+    "    def __init__(self, image_dir, transform=None):\n",
+    "        self.image_dir = image_dir\n",
+    "        self.image_paths = list(Path(image_dir).glob('*.jpg'))  # adjust extension if needed\n",
+    "        self.transform = transform\n",
+    "\n",
+    "    def __len__(self):\n",
+    "        return len(self.image_paths)\n",
+    "\n",
+    "    def __getitem__(self, idx):\n",
+    "        img_path = self.image_paths[idx]\n",
+    "        image = Image.open(img_path).convert('RGB')\n",
+    "        if self.transform:\n",
+    "            image = self.transform(image)\n",
+    "        return image, img_path.name  # return filename for tracking predictions"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "id": "48dc3e03",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.375158Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.374920Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.381023Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.380542Z"
+    },
+    "papermill": {
+     "duration": 0.011488,
+     "end_time": "2025-05-25T20:51:44.381961",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.370473",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "test_dataset = TestDataset(image_dir=test_dir, transform=val_transforms)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0cf60f2b",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003983,
+     "end_time": "2025-05-25T20:51:44.390017",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.386034",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### Create DataLoaders"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "id": "406fb075",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.398799Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.398597Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.402329Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.401770Z"
+    },
+    "papermill": {
+     "duration": 0.009323,
+     "end_time": "2025-05-25T20:51:44.403288",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.393965",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [],
+   "source": [
+    "train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=2)\n",
+    "test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "bba09349",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003861,
+     "end_time": "2025-05-25T20:51:44.411270",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.407409",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "source": [
+    "#### Confirm class mapping"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "201d1afd",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.419965Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.419750Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.423478Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.422784Z"
+    },
+    "papermill": {
+     "duration": 0.009348,
+     "end_time": "2025-05-25T20:51:44.424587",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.415239",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'0': 0, '1': 1}\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(train_dataset.class_to_idx)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "dbbba37e",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2025-05-25T20:51:44.433650Z",
+     "iopub.status.busy": "2025-05-25T20:51:44.433479Z",
+     "iopub.status.idle": "2025-05-25T20:51:44.459956Z",
+     "shell.execute_reply": "2025-05-25T20:51:44.459280Z"
+    },
+    "papermill": {
+     "duration": 0.032174,
+     "end_time": "2025-05-25T20:51:44.460979",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.428805",
+     "status": "completed"
+    },
+    "tags": []
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Using device: cuda\n",
+      "GPU: Tesla P100-PCIE-16GB\n",
+      "CUDA Version: 12.4\n"
+     ]
+    }
+   ],
+   "source": [
+    "# Check device availability\n",
+    "device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+    "print(f\"Using device: {device}\")\n",
+    "if torch.cuda.is_available():\n",
+    "    print(f\"GPU: {torch.cuda.get_device_name(0)}\")\n",
+    "    print(f\"CUDA Version: {torch.version.cuda}\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "088038e6",
+   "metadata": {
+    "papermill": {
+     "duration": 0.003956,
+     "end_time": "2025-05-25T20:51:44.469299",
+     "exception": false,
+     "start_time": "2025-05-25T20:51:44.465343",
      "status": "completed"
     },
     "tags": []
@@ -58,7 +980,7 @@
      "sourceType": "datasetVersion"
     }
    ],
-   "dockerImageVersionId": 31040,
+   "dockerImageVersionId": 31041,
    "isGpuEnabled": true,
    "isInternetEnabled": true,
    "language": "python",
@@ -83,14 +1005,14 @@
   },
   "papermill": {
    "default_parameters": {},
-   "duration": 4.222524,
-   "end_time": "2025-05-25T08:57:35.686844",
+   "duration": 40.249696,
+   "end_time": "2025-05-25T20:51:47.531634",
    "environment_variables": {},
    "exception": null,
    "input_path": "__notebook__.ipynb",
    "output_path": "__notebook__.ipynb",
    "parameters": {},
-   "start_time": "2025-05-25T08:57:31.464320",
+   "start_time": "2025-05-25T20:51:07.281938",
    "version": "2.6.0"
   }
  },
