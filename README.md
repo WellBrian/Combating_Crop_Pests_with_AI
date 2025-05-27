@@ -20,14 +20,14 @@ Participants are provided with a dataset comprising images of crops affected by 
 - **Optimization**: Fine-tuning models to improve accuracy and reduce false positives/negatives.
 
 ## Results  
-The implemented AI models demonstrated promising results in accurately detecting pest infestations in crop images. The best-performing model achieved an `accuracy of 99.69%`, showcasing the potential of AI in agricultural pest management.
+The implemented AI models demonstrated promising results in accurately detecting pest infestations in crop images. The best-performing model achieved an **`accuracy of 99.69%`**, showcasing the potential of AI in agricultural pest management.
 
 ## Future Work  
-- Real-world Deployment: Integrating the AI models into drone systems for real-time field monitoring.
+- **Real-world Deployment**: Integrating the AI models into drone systems for real-time field monitoring.
 
-- Expanded Dataset: Collecting more diverse data to improve model robustness across different crop types and pest species.
+- **Expanded Dataset**: Collecting more diverse data to improve model robustness across different crop types and pest species.
 
-- Collaborations: Partnering with agricultural organizations to pilot the solutions in real farming environments.
+- **Collaborations**: Partnering with agricultural organizations to pilot the solutions in real farming environments.
 
 ## Acknowledgments
 We extend our gratitude to Zindi, Multimedia University (MMU), and Meru University of Science and Technology (MUST) for organizing this hackathon and providing the platform to develop solutions addressing critical agricultural challenges.
